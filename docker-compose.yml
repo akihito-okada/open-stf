@@ -1,0 +1,18 @@
+version: '2'
+
+services:
+  db:
+    image: rethinkdb
+    command: rethinkdb --bind all
+  stf:
+    image: openstf/stf
+    ports:
+      - 7100:7100
+      - 7110:7110
+      - "7400-7500:7400-7500"
+    links:
+      - db
+    environment:
+      - RETHINKDB_PORT_28015_TCP=tcp://db:28015
+      - RETHINKDB_ENV_DATABASE=test
+    command: stf local --allow-remote --public-ip 192.168.100.200  --provider-min-port 7400 --provider-max-port 7500 --adb-host docker.for.mac.host.internal
